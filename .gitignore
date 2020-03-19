@@ -1,0 +1,8 @@
+node_modules
+.cache
+
+build
+build/*
+!build
+!build/assets
+!build/assets/*

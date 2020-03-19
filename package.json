@@ -1,0 +1,33 @@
+{
+  "name": "3d-shop",
+  "version": "1.0.0",
+  "description": "Demo of interactive multiuser 3D shopping experience",
+  "scripts": {
+    "start": "parcel public/index.html -d ./build",
+    "build": "parcel build public/index.html -d ./build"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "glslify": "^7.0.0",
+    "parcel-plugin-glslify": "^0.1.0",
+    "react": "16.12.0",
+    "react-div-100vh": "^0.3.8",
+    "react-dom": "16.12.0",
+    "react-scripts": "3.4.0",
+    "react-spring": "^9.0.0-beta.34",
+    "react-three-fiber": "4.0.17",
+    "react-three-gui": "^0.1.5",
+    "three": "0.113.2"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "node-sass": "^4.13.1",
+    "parcel-bundler": "1.12.4",
+    "sass": "^1.25.0"
+  }
+}
