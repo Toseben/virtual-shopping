@@ -37,14 +37,11 @@ body {
   height: 100%;
   position: absolute;
   z-index: 1;
-  background: black;
-  opacity: 0.2;
+  background: #FF0000;
   transition: visibility 0.5s, opacity 0.5s;
-  visibility: visible;
-  &.hidden {
-    opacity: 0;
-    visibility: hidden;
-  }
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .lds-ring {
