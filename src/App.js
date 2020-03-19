@@ -21,7 +21,7 @@ export default function App() {
       </div> */}
       <div className="App" onClick={mousePressed}>
         <Div100vh style={{ height: `100rvh` }} className="vis-container">
-          <Graphics setLoaded={setLoaded} mobile={mobile} activate={activate}></Graphics>
+          <Graphics setLoaded={setLoaded} mobile={mobile} activate={activate} setActivate={setActivate}></Graphics>
         </Div100vh>
       </div>
     </>

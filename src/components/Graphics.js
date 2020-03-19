@@ -17,7 +17,7 @@ function ControlsOrbit() {
 }
 
 extend({ PointerLockControls })
-function ControlsPointer({ activate, ...props }) {
+function ControlsPointer({ activate, setActivate, ...props }) {
   const controls = useRef()
   const { camera, gl } = useThree()
 
@@ -38,7 +38,7 @@ function ControlsPointer({ activate, ...props }) {
       direction.current.z = Number(moveForward);
       direction.current.normalize();
 
-      if (moveForward) velocity.current.z -= direction.current.z * 400.0 * delta;
+      if (moveForward) velocity.current.z -= direction.current.z * 1000.0 * delta;
 
       controls.current.moveForward(- velocity.current.z * delta);
 
@@ -47,6 +47,10 @@ function ControlsPointer({ activate, ...props }) {
     }
 
   })
+
+  useEffect(() => {
+    camera.position.set(0, 0, 500)
+  }, [])
 
   useEffect(() => {
     if (activate) controls.current.lock()
@@ -60,12 +64,24 @@ function ControlsPointer({ activate, ...props }) {
     setMoveForward(false)
   }
 
+  const onLock = () => {}
+
+  const onUnlock = () => {
+    setActivate(false)
+  }
+
   useEffect(() => {
+    controls.current.addEventListener('lock', onLock);
+    controls.current.addEventListener('unlock', onUnlock);
+
     document.addEventListener('mousedown', onMouseDown)
     document.addEventListener('mouseup', onMouseUp)
     document.addEventListener('mouseout', onMouseUp)
     return () => {
-      document.removeEventListener('mousedown', mouseup)
+      controls.current.removeEventListener('lock', onLock);
+      controls.current.removeEventListener('unlock', onUnlock);
+
+      document.removeEventListener('mousedown', onMouseDown)
       document.removeEventListener('mouseup', onMouseUp)
       document.removeEventListener('mouseout', onMouseUp)
     }
@@ -86,6 +102,18 @@ function Model() {
   })
 
   useEffect(() => {
+    gltf.scene.scale.set(0.5, 0.5, 0.5)
+
+    const box = new THREE.Box3();
+    box.setFromObject(gltf.scene)
+
+    const center = new THREE.Vector3()
+    box.getCenter(center)
+    gltf.scene.position.x -= center.x
+    gltf.scene.position.z -= center.z
+    gltf.scene.position.y -= box.min.y
+    gltf.scene.position.y -= 35
+
     scene.add(gltf.scene)
   })
 
@@ -94,17 +122,16 @@ function Model() {
   )
 }
 
-const Graphics = ({ mobile, ...props }) => {
-
+const Graphics = ({ mobile, activate, setActivate, ...props }) => {
   return (
     <Canvas
-      gl={{ alpha: false, antialias: false }}
+      gl={{ antialias: true }}
       onCreated={({ gl }) => {
         gl.setClearColor(0xeeeeee)
         gl.toneMapping = THREE.ACESFilmicToneMapping
         gl.outputEncoding = THREE.sRGBEncoding
       }}
-      camera={{ position: [0, 0, 500], far: 15000, near: 1 }}>
+      camera={{ far: 15000, near: 1 }}>
 
       <Suspense fallback={null}>
         <Model />
@@ -112,7 +139,7 @@ const Graphics = ({ mobile, ...props }) => {
 
       <ambientLight intensity={2} />
       {/* <ControlsOrbit /> */}
-      <ControlsPointer activate={props.activate} />
+      <ControlsPointer activate={activate} setActivate={setActivate} />
     </Canvas>
   );
 };
