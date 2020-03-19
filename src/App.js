@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react'
 import Div100vh from 'react-div-100vh'
 import './styles/styles.scss';
 import Graphics from './components/Graphics';
@@ -6,17 +6,22 @@ import Graphics from './components/Graphics';
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
 export default function App() {
-  const [loaded, setLoaded] = React.useState(false)
-  const [mobile] = React.useState(isMobile);
+  const [activate, setActivate] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const [mobile] = useState(isMobile);
+
+  const mousePressed = () => {
+    setActivate(true)
+  }
 
   return (
     <>
       {/* <div className={`overlay ${loaded ? 'hidden' : ''}`}>
-        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
       </div> */}
-      <div className="App">
+      <div className="App" onClick={mousePressed}>
         <Div100vh style={{ height: `100rvh` }} className="vis-container">
-          <Graphics setLoaded={setLoaded} mobile={mobile}></Graphics>
+          <Graphics setLoaded={setLoaded} mobile={mobile} activate={activate}></Graphics>
         </Div100vh>
       </div>
     </>
