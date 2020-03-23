@@ -19,7 +19,9 @@ export default function Effects() {
     size,
   ]);
   useEffect(() => void composer.current.setSize(size.width, size.height), [size])
-  useFrame(() => composer.current.render(), 1)
+  useFrame(() => {
+    if (composer.current) composer.current.render()
+  }, 1)
 
   const [lookup] = useLoader(THREE.TextureLoader, ["/assets/lut_1.jpg"])
 

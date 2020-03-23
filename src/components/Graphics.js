@@ -6,6 +6,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { PointerLockControls } from '../libs/PointerLockControls'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Effects from './Effects'
+import Stacy from './Stacy'
 
 extend({ OrbitControls })
 function ControlsOrbit() {
@@ -101,8 +102,8 @@ function ControlsPointer({ activate, setActivate, setStuck }) {
   const onUnlock = () => {
     setActivate(false)
     velocity.current = 0
-    camera.position.copy(storePos.current)
-    camera.rotation.copy(storeRot.current)
+    if (storePos.current) camera.position.copy(storePos.current)
+    if (storeRot.current) camera.rotation.copy(storeRot.current)
     gl.render(scene, camera)
   }
 
@@ -208,7 +209,7 @@ function Lights() {
     light.shadow.mapSize.height = 1024;
     light.shadow.camera.near = 0.5;
     light.shadow.camera.far = 1024;
-    light.shadowBias = -0.002;
+    light.shadow.bias = -0.002;
 
     const d = 200;
     light.shadow.camera.left = - d;
@@ -242,6 +243,8 @@ const Graphics = ({ mobile, activate, setActivate, setStuck, setLoaded, ...props
         <Model setLoaded={setLoaded} />
         <Boundaries />
         <Effects />
+
+        <Stacy />
       </Suspense>
 
       <Lights />
