@@ -2,11 +2,11 @@
 
 import * as THREE from "three"
 import React, { useEffect, useRef, useState, useMemo } from "react"
-import { useLoader, useFrame } from "react-three-fiber"
+import { useLoader, useFrame, useThree } from "react-three-fiber"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils"
 import lerp from "lerp"
-import { getMouseDegrees } from "./utils"
+import { getMouseDegrees } from "../utils/utils"
 
 const avatars = [
   { position: [-50, 1.5, 80], rotation: [0, Math.PI, 0] },
@@ -15,6 +15,26 @@ const avatars = [
   { position: [85, 1, 20], rotation: [0, 0, 0] },
   { position: [97.5, 1.5, -47.5], rotation: [0, Math.PI + Math.PI / 4, 0] },
 ]
+
+function toScreenPosition(obj, camera, renderer) {
+  var vector = new THREE.Vector3();
+
+  var widthHalf = 0.5 * renderer.context.canvas.width;
+  var heightHalf = 0.5 * renderer.context.canvas.height;
+
+  obj.updateMatrixWorld();
+  vector.setFromMatrixPosition(obj.matrixWorld);
+  vector.project(camera);
+
+  vector.x = (vector.x * widthHalf) + widthHalf;
+  vector.y = - (vector.y * heightHalf) + heightHalf;
+
+  return {
+    x: renderer.context.canvas.width - vector.x,
+    y: renderer.context.canvas.height - vector.y
+  };
+
+};
 
 function moveJoint(mouse, joint, degreeLimit = 40) {
   let degrees = getMouseDegrees(mouse.x, mouse.y, degreeLimit)
@@ -70,15 +90,41 @@ function Avatar({ data, stacy, animations }) {
 
 export default function Model({ ...props }) {
   const gltf = useLoader(GLTFLoader, "/assets/stacy.glb")
-  // const texture = useLoader(THREE.TextureLoader, "/assets/stacy.jpg")
-  // texture.encoding = THREE.GammaEncoding
+  const { camera, gl } = useThree()
 
   useEffect(() => {
     gltf.nodes['Stacy'].add(gltf.nodes['mixamorigHips'])
   }, [])
 
+  const group = useRef()
+  useFrame(() => {
+    if (!group.current) return
+    const speechBubbles = document.getElementById('speechBubbles')
+    if (!speechBubbles) return
+
+    let closePoint = { dist: Infinity, point: null };
+    group.current.children.forEach(obj => {
+      const dist = obj.position.distanceTo(camera.position)
+      if (dist < closePoint.dist) closePoint = { dist, point: obj };
+    })
+
+    const screenPos = toScreenPosition(closePoint.point, camera, gl)
+    speechBubbles.style.right = `${screenPos.x}px`
+    speechBubbles.style.bottom = `${screenPos.y}px`
+  })
+
   return (
     <>
+      <group ref={group}>
+        {avatars.map((data, index) => {
+          const position = [...data.position]
+          position[1] += 29
+          return <mesh key={index} position={position} visible={false}>
+            <sphereGeometry attach="geometry" args={[1, 8, 8]} />
+            <meshStandardMaterial attach="material" color="red" />
+          </mesh>
+        })}
+      </group>
       {avatars.map((data, index) => {
         return <Avatar key={index} data={data} stacy={gltf.nodes['Stacy']} animations={gltf.animations} />
       })}

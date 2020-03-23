@@ -62,7 +62,6 @@ body {
 
   color: #ffffff;
   text-align: center;
-  font-family: Arial;
   font-size: 14px;
   line-height: 24px;
 
@@ -182,4 +181,8 @@ body {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.messages {
+  white-space: nowrap;
 }

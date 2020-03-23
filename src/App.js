@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import { useTrail, useSpring, animated } from 'react-spring'
+import React, { useState, useRef } from 'react'
+import { useTrail, animated } from 'react-spring'
 import Div100vh from 'react-div-100vh'
 import './styles/styles.scss';
 import Graphics from './components/Graphics';
+import MessageHub from './components/MessageHub';
 
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
@@ -38,6 +39,8 @@ export default function App() {
 
   return (
     <>
+      {activate && <MessageHub />}
+
       <div className={`overlay ${loaded ? 'hidden' : ''}`}>
         <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
       </div>
