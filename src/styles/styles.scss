@@ -2,9 +2,6 @@
 
 * {
   font-family: "Open Sans", sans-serif;
-  letter-spacing: 1px;
-  font-weight: 300;
-  font-size: calc(18px * 0.75);
   &:focus {
     outline: none;
   }
@@ -26,29 +23,20 @@ body {
   bottom: 0;
 }
 
-.overlay {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: 1;
-  background: #FF0000;
-  transition: visibility 0.5s, opacity 0.5s;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
 // BLOCKER
-
 #blocker {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
   z-index: 1;
+  background: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.5s, visibility 0.5s;
+  visibility: visible;
+  opacity: 1;
 
   &.hidden {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
   }
 }
 
@@ -85,43 +73,58 @@ body {
   }
 }
 
-// LOADER
+// TEXT
 
-.lds-ring {
-  display: inline-block;
+.trails-main {
   position: relative;
-  width: 80px;
-  height: 80px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border: 8px solid #fff;
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #fff transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
+  z-index: 1;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.5s;
+  &.stuck {
+    background: rgba(0, 0, 0, 0.25);
   }
-  100% {
-    transform: rotate(360deg);
+}
+
+.trails-text {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  line-height: 80px;
+  color: white;
+  font-size: 5em;
+  font-weight: 800;
+  text-transform: uppercase;
+  will-change: transform, opacity;
+  overflow: hidden;
+  &.instructions {
+    font-size: 3em;
+    text-align: center;
+    &:first-child {
+      font-size: 5em;
+    }
   }
+  &.svg {
+    height: 22.5vmin;
+    overflow: visible;
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+    img {
+      height: 100%;
+      position: absolute;
+      opacity: 0.9;
+    }
+  }
+}
+
+.trails-text > div {
+  overflow: hidden;
 }

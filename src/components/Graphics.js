@@ -24,7 +24,7 @@ function ControlsOrbit() {
   )
 }
 extend({ PointerLockControls })
-function ControlsPointer({ activate, setActivate }) {
+function ControlsPointer({ activate, setActivate, setStuck }) {
   const controls = useRef()
   const overlay = useRef(document.getElementById('overlay'))
   const { scene, camera, gl } = useThree()
@@ -64,11 +64,9 @@ function ControlsPointer({ activate, setActivate }) {
       }
 
       if (moveForward && intersections.length) {
-        overlay.current.style.opacity = 0.2;
-        overlay.current.style.visibility = 'visible';
+        setStuck(true)
       } else {
-        overlay.current.style.opacity = 0;
-        overlay.current.style.visibility = 'hidden';
+        setStuck(false)
       }
 
       controls.current.moveForward(- velocity.current * delta);
@@ -226,7 +224,7 @@ function Lights() {
   )
 }
 
-const Graphics = ({ mobile, activate, setActivate, ...props }) => {
+const Graphics = ({ mobile, activate, setActivate, setStuck, ...props }) => {
   return (
     <Canvas
       gl={{ antialias: true }}
@@ -247,7 +245,7 @@ const Graphics = ({ mobile, activate, setActivate, ...props }) => {
 
       <Lights />
       <ambientLight intensity={0.8}/>
-      <ControlsPointer activate={activate} setActivate={setActivate} />
+      <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck} />
       {/* <ControlsOrbit /> */}
 
     </Canvas>
