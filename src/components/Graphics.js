@@ -10,14 +10,18 @@ extend({ OrbitControls })
 function ControlsOrbit() {
   const controls = useRef()
   const { camera, gl } = useThree()
+
+  useEffect(() => {
+    camera.position.set(-125, 125, 125)
+  }, [])
+
   useFrame(() => controls.current.update())
   return (
     <orbitControls ref={controls} args={[camera, gl.domElement]} enableDamping dampingFactor={0.1} rotateSpeed={0.5} />
   )
 }
-
 extend({ PointerLockControls })
-function ControlsPointer({ activate, setActivate, ...props }) {
+function ControlsPointer({ activate, setActivate }) {
   const controls = useRef()
   const overlay = useRef(document.getElementById('overlay'))
   const { scene, camera, gl } = useThree()
@@ -30,6 +34,9 @@ function ControlsPointer({ activate, setActivate, ...props }) {
 
   const objects = scene.children.filter(obj => obj.name === 'OSG_Scene')
   const boundaries = scene.children.filter(obj => obj.name === 'boundaries')
+
+  const storePos = useRef()
+  const storeRot = useRef()
 
   useFrame(() => {
     if (controls.current.isLocked === true) {
@@ -53,7 +60,7 @@ function ControlsPointer({ activate, setActivate, ...props }) {
         velocity.current *= 0.975;
       }
 
-      if (moveForward &&intersections.length) {
+      if (moveForward && intersections.length) {
         overlay.current.style.opacity = 0.2;
         overlay.current.style.visibility = 'visible';
       } else {
@@ -65,6 +72,8 @@ function ControlsPointer({ activate, setActivate, ...props }) {
 
       prevTime.current = time;
 
+      storePos.current = camera.position.clone()
+      storeRot.current = camera.rotation.clone()
     }
 
   })
@@ -89,6 +98,10 @@ function ControlsPointer({ activate, setActivate, ...props }) {
 
   const onUnlock = () => {
     setActivate(false)
+    velocity.current = 0
+    camera.position.copy(storePos.current)
+    camera.rotation.copy(storeRot.current)
+    gl.render(scene, camera)
   }
 
   useEffect(() => {
@@ -127,7 +140,7 @@ function Model() {
   })
 
   useEffect(() => {
-    scene.fog = new THREE.FogExp2(0xeeeeee, 0.01);
+    // scene.fog = new THREE.FogExp2(0xeeeeee, 0.01);
 
     gltf.scene.scale.set(0.5, 0.5, 0.5)
 
@@ -183,8 +196,8 @@ const Graphics = ({ mobile, activate, setActivate, ...props }) => {
       </Suspense>
 
       <ambientLight intensity={2} />
-      {/* <ControlsOrbit /> */}
       <ControlsPointer activate={activate} setActivate={setActivate} />
+      {/* <ControlsOrbit /> */}
     </Canvas>
   );
 };

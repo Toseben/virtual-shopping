@@ -18,12 +18,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.App {
-  height: 100vh;
-  position: relative;
-  box-sizing: border-box;
-}
-
 .vis-container {
   position: absolute;
   top: 0;
@@ -43,6 +37,55 @@ body {
   visibility: hidden;
   pointer-events: none;
 }
+
+// BLOCKER
+
+#blocker {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+#instructions {
+  width: 100%;
+  height: 100%;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  box-orient: horizontal;
+
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  box-pack: center;
+
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  box-align: center;
+
+  color: #ffffff;
+  text-align: center;
+  font-family: Arial;
+  font-size: 14px;
+  line-height: 24px;
+
+  cursor: pointer;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+// LOADER
 
 .lds-ring {
   display: inline-block;
