@@ -12,7 +12,9 @@ function ControlsOrbit() {
   const { camera, gl } = useThree()
 
   useEffect(() => {
-    camera.position.set(-125, 125, 125)
+    camera.position.set(0, 500, 0)
+    camera.fov = 50
+    camera.updateProjectionMatrix()
   }, [])
 
   useFrame(() => controls.current.update())
@@ -139,6 +141,12 @@ function Model() {
     loader.setDRACOLoader(dracoLoader)
   })
 
+  const r = "/assets/envMap/";
+  const urls = [r + "px.png", r + "nx.png",
+  r + "py.png", r + "ny.png",
+  r + "pz.png", r + "nz.png"];
+  const [envMap] = useLoader(THREE.CubeTextureLoader, [urls])
+
   useEffect(() => {
     // scene.fog = new THREE.FogExp2(0xeeeeee, 0.01);
 
@@ -154,13 +162,20 @@ function Model() {
     gltf.scene.position.y -= box.min.y
     gltf.scene.position.y -= 6.25
 
+    Object.values(gltf.nodes).filter(node => node.type === 'Mesh').forEach(node => {
+      node.receiveShadow = node.castShadow = true
+      node.material.envMap = envMap
+      node.material.envMapIntensity = 2.5
+      node.material.needsUpdate = true
+    })
+
     scene.add(gltf.scene)
 
-    actions.current = { storkFly_B_: mixer.clipAction(gltf.animations[0], gltf.scene) }
+    actions.current = { animation: mixer.clipAction(gltf.animations[0], gltf.scene) }
     return () => gltf.animations.forEach(clip => mixer.uncacheClip(clip))
   }, [])
 
-  useEffect(() => void actions.current.storkFly_B_.play(), [])
+  useEffect(() => void actions.current.animation.play(), [])
 
   return (
     <></>
@@ -179,6 +194,36 @@ function Boundaries() {
   )
 }
 
+function Lights() {
+  const { scene } = useThree()
+
+  useEffect(() => {
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(256, 256, 256);
+    light.castShadow = true;
+    scene.add(light);
+
+    light.shadow.mapSize.width = 1024;
+    light.shadow.mapSize.height = 1024;
+    light.shadow.camera.near = 0.5;
+    light.shadow.camera.far = 1024;
+    light.shadowBias = -0.002;
+
+    const d = 200;
+    light.shadow.camera.left = - d;
+    light.shadow.camera.right = d;
+    light.shadow.camera.top = d;
+    light.shadow.camera.bottom = - d;
+
+    // const helper = new THREE.CameraHelper(light.shadow.camera);
+    // scene.add(helper);
+  }, [])
+
+  return (
+    <></>
+  )
+}
+
 const Graphics = ({ mobile, activate, setActivate, ...props }) => {
   return (
     <Canvas
@@ -187,6 +232,8 @@ const Graphics = ({ mobile, activate, setActivate, ...props }) => {
         gl.setClearColor(0xeeeeee)
         gl.toneMapping = THREE.ACESFilmicToneMapping
         gl.outputEncoding = THREE.sRGBEncoding
+        gl.shadowMap.enabled = true
+        gl.shadowMap.type = THREE.PCFSoftShadowMap
       }}
       camera={{ far: 1000, near: 0.1, fov: 125 }}>
 
@@ -195,9 +242,10 @@ const Graphics = ({ mobile, activate, setActivate, ...props }) => {
         <Boundaries />
       </Suspense>
 
-      <ambientLight intensity={2} />
-      <ControlsPointer activate={activate} setActivate={setActivate} />
-      {/* <ControlsOrbit /> */}
+      <Lights />
+      <ambientLight intensity={0.8} />
+      {/* <ControlsPointer activate={activate} setActivate={setActivate} /> */}
+      <ControlsOrbit />
     </Canvas>
   );
 };
