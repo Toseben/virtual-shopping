@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useTrail, animated } from 'react-spring'
+import { useTrail, useSpring, animated } from 'react-spring'
 import Div100vh from 'react-div-100vh'
 import './styles/styles.scss';
 import Graphics from './components/Graphics';
@@ -38,6 +38,10 @@ export default function App() {
 
   return (
     <>
+      <div className={`overlay ${loaded ? 'hidden' : ''}`}>
+        <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
+      </div>
+
       <div className={`trails-main ${stuck ? 'stuck' : ''}`}>
         <div>
           {trail.map(({ x, height, ...rest }, index) => {

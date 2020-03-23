@@ -128,7 +128,7 @@ function ControlsPointer({ activate, setActivate, setStuck }) {
   )
 }
 
-function Model() {
+function Model({ setLoaded }) {
   const { scene } = useThree()
 
   const actions = useRef()
@@ -169,6 +169,7 @@ function Model() {
       node.material.needsUpdate = true
     })
 
+    setLoaded(true)
     scene.add(gltf.scene)
 
     actions.current = { animation: mixer.clipAction(gltf.animations[0], gltf.scene) }
@@ -224,7 +225,7 @@ function Lights() {
   )
 }
 
-const Graphics = ({ mobile, activate, setActivate, setStuck, ...props }) => {
+const Graphics = ({ mobile, activate, setActivate, setStuck, setLoaded, ...props }) => {
   return (
     <Canvas
       gl={{ antialias: true }}
@@ -238,7 +239,7 @@ const Graphics = ({ mobile, activate, setActivate, setStuck, ...props }) => {
       camera={{ far: 1000, near: 0.1, fov: 100 }}>
 
       <Suspense fallback={null}>
-        <Model />
+        <Model setLoaded={setLoaded} />
         <Boundaries />
         <Effects />
       </Suspense>
