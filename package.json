@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "glsl-lut": "^1.1.1",
     "glslify": "^7.0.0",
     "parcel-plugin-glslify": "^0.1.0",
     "react": "16.12.0",

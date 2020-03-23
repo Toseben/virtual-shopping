@@ -5,6 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { PointerLockControls } from '../libs/PointerLockControls'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import Effects from './Effects'
 
 extend({ OrbitControls })
 function ControlsOrbit() {
@@ -81,7 +82,8 @@ function ControlsPointer({ activate, setActivate }) {
   })
 
   useEffect(() => {
-    camera.position.set(25, 25, 125)
+    camera.position.set(-45, 25, 134.75)
+    camera.rotation.set(0.1475, 0, 0)
   }, [])
 
   useEffect(() => {
@@ -165,7 +167,7 @@ function Model() {
     Object.values(gltf.nodes).filter(node => node.type === 'Mesh').forEach(node => {
       node.receiveShadow = node.castShadow = true
       node.material.envMap = envMap
-      node.material.envMapIntensity = 2.5
+      node.material.envMapIntensity = 2
       node.material.needsUpdate = true
     })
 
@@ -230,22 +232,24 @@ const Graphics = ({ mobile, activate, setActivate, ...props }) => {
       gl={{ antialias: true }}
       onCreated={({ gl }) => {
         gl.setClearColor(0xeeeeee)
-        gl.toneMapping = THREE.ACESFilmicToneMapping
-        gl.outputEncoding = THREE.sRGBEncoding
+        // gl.toneMapping = THREE.ACESFilmicToneMapping
+        // gl.outputEncoding = THREE.sRGBEncoding
         gl.shadowMap.enabled = true
         gl.shadowMap.type = THREE.PCFSoftShadowMap
       }}
-      camera={{ far: 1000, near: 0.1, fov: 125 }}>
+      camera={{ far: 1000, near: 0.1, fov: 100 }}>
 
       <Suspense fallback={null}>
         <Model />
         <Boundaries />
+        <Effects />
       </Suspense>
 
       <Lights />
-      <ambientLight intensity={0.8} />
-      {/* <ControlsPointer activate={activate} setActivate={setActivate} /> */}
-      <ControlsOrbit />
+      <ambientLight intensity={0.8}/>
+      <ControlsPointer activate={activate} setActivate={setActivate} />
+      {/* <ControlsOrbit /> */}
+
     </Canvas>
   );
 };
