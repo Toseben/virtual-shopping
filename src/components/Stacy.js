@@ -19,8 +19,8 @@ const avatars = [
 function toScreenPosition(obj, camera, renderer) {
   var vector = new THREE.Vector3();
 
-  var widthHalf = 0.5 * renderer.context.canvas.width;
-  var heightHalf = 0.5 * renderer.context.canvas.height;
+  var widthHalf = 0.5 * renderer.getContext().canvas.width;
+  var heightHalf = 0.5 * renderer.getContext().canvas.height;
 
   obj.updateMatrixWorld();
   vector.setFromMatrixPosition(obj.matrixWorld);
@@ -30,8 +30,8 @@ function toScreenPosition(obj, camera, renderer) {
   vector.y = - (vector.y * heightHalf) + heightHalf;
 
   return {
-    x: renderer.context.canvas.width - vector.x,
-    y: renderer.context.canvas.height - vector.y
+    x: renderer.getContext().canvas.width - vector.x,
+    y: renderer.getContext().canvas.height - vector.y
   };
 
 };
@@ -102,15 +102,27 @@ export default function Model({ ...props }) {
     const speechBubbles = document.getElementById('speechBubbles')
     if (!speechBubbles) return
 
+    camera.updateMatrix();
+    camera.updateMatrixWorld();
+    camera.matrixWorldInverse.getInverse(camera.matrixWorld);
+
+    const frustum = new THREE.Frustum();
+    frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+
     let closePoint = { dist: Infinity, point: null };
     group.current.children.forEach(obj => {
+      if (!frustum.containsPoint(obj.position)) return
       const dist = obj.position.distanceTo(camera.position)
       if (dist < closePoint.dist) closePoint = { dist, point: obj };
     })
 
-    const screenPos = toScreenPosition(closePoint.point, camera, gl)
-    speechBubbles.style.right = `${screenPos.x}px`
-    speechBubbles.style.bottom = `${screenPos.y}px`
+    if (closePoint.point && closePoint.dist < 60) {
+      speechBubbles.style.opacity = 1
+      const screenPos = toScreenPosition(closePoint.point, camera, gl)
+      speechBubbles.style.right = `${screenPos.x}px`
+      speechBubbles.style.bottom = `${screenPos.y}px`
+    }
+    else speechBubbles.style.opacity = 0
   })
 
   return (

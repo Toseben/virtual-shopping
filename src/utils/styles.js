@@ -14,6 +14,7 @@ export const Container = styled('div')`
   flex-direction: ${props => (props.top ? 'column-reverse' : 'column')};
   pointer-events: none;
   align-items: ${props => (props.position === 'center' ? 'center' : `flex-${props.position || 'end'}`)};
+  transition: opacity 0.5s;
   @media (max-width: 680px) {
     align-items: center;
   }
@@ -37,7 +38,8 @@ export const Content = styled('div')`
   background: white;
   opacity: 0.9;
   padding: 0 22px;
-  font-size: 1em;
+  font-size: 1.25em;
+  font-weight: 100;
   display: grid;
   grid-template-columns: ${props => (props.canClose === false ? '1fr' : '1fr auto')};
   grid-gap: 10px;
