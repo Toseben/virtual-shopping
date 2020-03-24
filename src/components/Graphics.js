@@ -129,7 +129,7 @@ function ControlsPointer({ activate, setActivate, setStuck }) {
   )
 }
 
-function Model({ setLoaded }) {
+function Model({ setLoaded, setProgress }) {
   const { scene } = useThree()
 
   const actions = useRef()
@@ -137,6 +137,10 @@ function Model({ setLoaded }) {
   useFrame((state, delta) => mixer.update(delta))
 
   const gltf = useLoader(GLTFLoader, 'assets/LittlestTokyo.glb', loader => {
+    loader.manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+      setProgress(parseInt(Math.min(itemsLoaded / 14, 1) * 100));
+    };
+
     const dracoLoader = new DRACOLoader()
     dracoLoader.setDecoderPath('assets/draco/gltf/');
     loader.setDRACOLoader(dracoLoader)
@@ -170,7 +174,9 @@ function Model({ setLoaded }) {
       node.material.needsUpdate = true
     })
 
+    setProgress(100);
     setLoaded(true)
+    document.body.style.background = '#2f2f2f'
     scene.add(gltf.scene)
 
     actions.current = { animation: mixer.clipAction(gltf.animations[0], gltf.scene) }
@@ -226,7 +232,7 @@ function Lights() {
   )
 }
 
-const Graphics = ({ mobile, activate, setActivate, setStuck, setLoaded, ...props }) => {
+const Graphics = ({ mobile, activate, setActivate, setStuck, loaded, setLoaded, setProgress, ...props }) => {
   return (
     <Canvas
       gl={{ antialias: true }}
@@ -240,15 +246,19 @@ const Graphics = ({ mobile, activate, setActivate, setStuck, setLoaded, ...props
       camera={{ far: 1000, near: 0.1, fov: 100 }}>
 
       <Suspense fallback={null}>
-        <Model setLoaded={setLoaded} />
-        <Boundaries />
+        <Model setLoaded={setLoaded} setProgress={setProgress} />
         <Effects />
-
-        <Stacy />
       </Suspense>
 
+      {loaded &&
+        <Suspense fallback={null}>
+          <Boundaries />
+          <Stacy />
+        </Suspense>
+      }
+
       <Lights />
-      <ambientLight intensity={0.8}/>
+      <ambientLight intensity={0.8} />
       <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck} />
       {/* <ControlsOrbit /> */}
 

@@ -10,7 +10,7 @@
 body {
   margin: 0;
   overflow: hidden;
-  background: #2f2f2f;
+  background: #c9d7dc;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -134,9 +134,9 @@ body {
   height: 100%;
   position: absolute;
   z-index: 2;
-  background: black;
-  opacity: 0.75;
-  transition: visibility 0.5s, opacity 0.5s;
+  background: #c9d7dc;
+  opacity: 1;
+  transition: visibility 1s, opacity 1s;
   visibility: visible;
   &.hidden {
     opacity: 0;
@@ -144,45 +144,52 @@ body {
   }
 }
 
-.lds-ring {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
+.messages {
+  white-space: nowrap;
+}
+
+// PROGRESSBAR
+.progress {
+  background-color: #f5f5f5;
+  border-radius: 3px;
+  box-shadow: none;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border: 8px solid #fff;
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #fff transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+
+.progress.vertical {
+  position: relative;
+  width: 50vw;
+  height: 75px;
+  display: inline-block;
+  margin-right: 10px;
 }
 
-.messages {
-  white-space: nowrap;
+.progress {
+  height: 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.23);
+}
+
+.progress.vertical > .progress-bar {
+  height: 100% !important;
+  position: absolute;
+  bottom: 0;
+}
+
+.progress-bar {
+  float: left;
+  width: 0;
+  height: 100%;
+  font-size: 12px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  background-color: #000000;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.23);
+  transition: width 0.6s ease;
 }

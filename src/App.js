@@ -4,6 +4,7 @@ import Div100vh from 'react-div-100vh'
 import './styles/styles.scss';
 import Graphics from './components/Graphics';
 import MessageHub from './components/MessageHub';
+import ProgressBar from "./components/ProgressBar";
 
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 
@@ -15,6 +16,7 @@ export default function App() {
   const [stuck, setStuck] = useState(false)
   const [activate, setActivate] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [progress, setProgress] = useState(0)
   const [mobile] = useState(isMobile);
 
   const mousePressed = () => {
@@ -42,7 +44,7 @@ export default function App() {
       {activate && <MessageHub />}
 
       <div className={`overlay ${loaded ? 'hidden' : ''}`}>
-        <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <ProgressBar progress={progress} />
       </div>
 
       <div className={`trails-main ${stuck ? 'stuck' : ''}`}>
@@ -84,7 +86,7 @@ export default function App() {
       </div>
 
       <Div100vh style={{ height: `100rvh` }} className="vis-container">
-        <Graphics setLoaded={setLoaded} setStuck={setStuck} mobile={mobile} activate={activate} setActivate={setActivate}></Graphics>
+        <Graphics setProgress={setProgress} loaded={loaded} setLoaded={setLoaded} setStuck={setStuck} mobile={mobile} activate={activate} setActivate={setActivate}></Graphics>
       </Div100vh>
     </>
   );
