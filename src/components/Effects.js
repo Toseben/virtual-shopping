@@ -15,9 +15,7 @@ extend({ EffectComposer, ShaderPass, RenderPass, UnrealBloomPass })
 export default function Effects() {
   const composer = useRef()
   const { scene, gl, size, camera } = useThree()
-  const aspect = useMemo(() => new THREE.Vector2(size.width, size.height), [
-    size,
-  ]);
+  const aspect = useMemo(() => new THREE.Vector2(size.width, size.height), []);
   useEffect(() => void composer.current.setSize(size.width, size.height), [size])
   useFrame(() => {
     if (composer.current) composer.current.render()

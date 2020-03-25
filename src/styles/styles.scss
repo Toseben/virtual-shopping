@@ -161,7 +161,7 @@ body {
 .progress.vertical {
   position: relative;
   width: 50vw;
-  height: 75px;
+  height: 5vh;
   display: inline-block;
   margin-right: 10px;
 }
@@ -192,4 +192,18 @@ body {
   background-color: #000000;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.23);
   transition: width 0.6s ease;
+}
+
+@media (max-width: 768px), (max-height: 768px) {
+  .trails-text {
+    font-size: 2.5em;
+    height: 60px;
+    line-height: 60px;
+    &.instructions {
+      font-size: 1.75em;
+      &:first-child {
+        font-size: 2.5em;
+      }
+    }
+  }
 }

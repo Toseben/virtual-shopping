@@ -15,9 +15,6 @@ export const Container = styled('div')`
   pointer-events: none;
   align-items: ${props => (props.position === 'center' ? 'center' : `flex-${props.position || 'end'}`)};
   transition: opacity 0.5s;
-  @media (max-width: 680px) {
-    align-items: center;
-  }
 `
 
 export const Message = styled(animated.div)`
@@ -27,8 +24,8 @@ export const Message = styled(animated.div)`
   overflow: hidden;
   width: auto;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.23);
-  @media (max-width: 680px) {
-    width: 100%;
+  @media (max-width: 768px), (max-height: 768px) {
+    border-radius: 8px;
   }
 `
 
@@ -47,4 +44,9 @@ export const Content = styled('div')`
   height: auto;
   margin-top: ${props => (props.top ? '0' : '5px')};
   margin-bottom: ${props => (props.top ? '0px' : '0')};
+  @media (max-width: 768px), (max-height: 768px) {
+    border-radius: 8px;
+    font-size: 0.75em;
+    padding: 0 10px;
+  }
 `
