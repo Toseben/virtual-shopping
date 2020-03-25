@@ -8,6 +8,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Effects from './Effects'
 import Stacy from './Stacy'
 
+import { useSpring, a } from 'react-spring/three'
+
 extend({ OrbitControls })
 function ControlsOrbit() {
   const controls = useRef()
@@ -25,9 +27,8 @@ function ControlsOrbit() {
   )
 }
 extend({ PointerLockControls })
-function ControlsPointer({ activate, setActivate, setStuck }) {
+function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHoverProduct }) {
   const controls = useRef()
-  const overlay = useRef(document.getElementById('overlay'))
   const { scene, camera, gl } = useThree()
 
   const prevTime = useRef(performance.now())
@@ -35,17 +36,43 @@ function ControlsPointer({ activate, setActivate, setStuck }) {
   const [moveForward, setMoveForward] = useState(false)
 
   const raycaster = useMemo(() => new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 14), [])
+  const productRaycaster = useMemo(() => new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 30), [])
 
   const objects = scene.children.filter(obj => obj.name === 'OSG_Scene')
   const boundaries = scene.children.filter(obj => obj.name === 'boundaries')
+  const products = scene.getObjectByName('products')
 
   const storePos = useRef()
   const storeRot = useRef()
+
+  const setCurrent = current => {
+    if (hoverProduct === current) return
+    setHoverProduct(current)
+  }
+
+  const handleProductIntersect = () => {
+    const lookAt = new THREE.Vector3(0, 0, -1);
+    lookAt.applyQuaternion(camera.quaternion).normalize()
+    productRaycaster.ray.direction.copy(lookAt)
+
+    const intersections = productRaycaster.intersectObjects(products.children)
+    if (!intersections.length) {
+      setCurrent(null)
+      return
+    }
+
+    setCurrent(intersections[0].object.name)
+  }
 
   useFrame(() => {
     if (controls.current.isLocked === true) {
       raycaster.ray.origin.copy(controls.current.getObject().position);
       raycaster.ray.origin.y = 25;
+
+      productRaycaster.ray.origin.copy(controls.current.getObject().position);
+      productRaycaster.ray.origin.y = 25;
+
+      handleProductIntersect()
 
       const lookAt = new THREE.Vector3(0, 0, -1);
       lookAt.applyQuaternion(camera.quaternion);
@@ -202,6 +229,33 @@ function Boundaries() {
   )
 }
 
+const colors = ['#1abc9c', '#f1c40f']
+
+function Products({ hoverProduct }) {
+  const gltf = useLoader(GLTFLoader, 'assets/products.glb')
+
+  const [products, meshes] = useMemo(() => {
+    const products = gltf.__$.filter(obj => obj.name.includes('product')).map(obj => obj.name)
+    const meshes = gltf.__$.filter(obj => obj.name.includes('mesh'))
+    return [products, meshes]
+  }, [])
+
+  return (
+    <group name="products">
+      {meshes.map((mesh, index) => {
+        const { color } = useSpring({ color: hoverProduct === products[index] ? colors[1] : colors[0], config: { mass: 1, friction: 12, tension: 180 } })
+        return (
+          <mesh key={index}
+            name={products[index]}>
+            <bufferGeometry attach="geometry" {...mesh.geometry} />
+            <a.meshBasicMaterial attach="material" color={color} />
+          </mesh>
+        )
+      })}
+    </group>
+  )
+}
+
 function Lights() {
   const { scene } = useThree()
 
@@ -233,6 +287,8 @@ function Lights() {
 }
 
 const Graphics = ({ mobile, activate, setActivate, setStuck, loaded, setLoaded, setProgress, ...props }) => {
+  const [hoverProduct, setHoverProduct] = useState(null)
+  
   return (
     <Canvas
       gl={{ antialias: true }}
@@ -252,6 +308,7 @@ const Graphics = ({ mobile, activate, setActivate, setStuck, loaded, setLoaded, 
 
       {loaded &&
         <Suspense fallback={null}>
+          <Products hoverProduct={hoverProduct} />
           <Boundaries />
           <Stacy />
         </Suspense>
@@ -259,7 +316,8 @@ const Graphics = ({ mobile, activate, setActivate, setStuck, loaded, setLoaded, 
 
       <Lights />
       <ambientLight intensity={0.8} />
-      {!mobile && <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck} />}
+      {!mobile && <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck} 
+        hoverProduct={hoverProduct} setHoverProduct={setHoverProduct} />}
       {mobile && <ControlsOrbit />}
 
     </Canvas>

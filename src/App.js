@@ -41,7 +41,11 @@ export default function App() {
 
   return (
     <>
-      {activate && <MessageHub />}
+      {activate && <>
+        <MessageHub />
+        <div className="pointer"></div>
+      </>}
+
 
       <div className={`overlay ${loaded ? 'hidden' : ''}`}>
         <ProgressBar progress={progress} />
