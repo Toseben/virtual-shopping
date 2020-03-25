@@ -111,16 +111,16 @@ function ControlsPointer({ activate, setActivate, setStuck }) {
     controls.current.addEventListener('lock', onLock);
     controls.current.addEventListener('unlock', onUnlock);
 
-    document.addEventListener('mousedown', onMouseDown)
-    document.addEventListener('mouseup', onMouseUp)
-    document.addEventListener('mouseout', onMouseUp)
+    document.addEventListener('pointerdown', onMouseDown)
+    document.addEventListener('pointerup', onMouseUp)
+    document.addEventListener('pointerout', onMouseUp)
     return () => {
       controls.current.removeEventListener('lock', onLock);
       controls.current.removeEventListener('unlock', onUnlock);
 
-      document.removeEventListener('mousedown', onMouseDown)
-      document.removeEventListener('mouseup', onMouseUp)
-      document.removeEventListener('mouseout', onMouseUp)
+      document.removeEventListener('pointerdown', onMouseDown)
+      document.removeEventListener('pointerup', onMouseUp)
+      document.removeEventListener('pointerout', onMouseUp)
     }
   }, [])
 
@@ -259,8 +259,8 @@ const Graphics = ({ mobile, activate, setActivate, setStuck, loaded, setLoaded, 
 
       <Lights />
       <ambientLight intensity={0.8} />
-      <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck} />
-      {/* <ControlsOrbit /> */}
+      {!mobile && <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck} />}
+      {mobile && <ControlsOrbit />}
 
     </Canvas>
   );
