@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useTrail, animated } from 'react-spring'
 import Div100vh from 'react-div-100vh'
 import './styles/styles.scss';
@@ -20,7 +20,9 @@ export default function App() {
   const [loaded, setLoaded] = useState(false)
   const [progress, setProgress] = useState(0)
   const [mobile] = useState(isMobile);
+
   const [hoverProduct, setHoverProduct] = useState(null)
+  const [selectProduct, setSelectProduct] = useState(null)
 
   const mousePressed = () => {
     setActivate(true)
@@ -46,8 +48,8 @@ export default function App() {
     <>
       {activate && <>
         <MessageHub />
-        {!hoverProduct && <div class="loader-5 center"><span></span></div>}
-        {hoverProduct && <div class="loader-6 center"><span></span></div>}
+        {!hoverProduct && <div className="loader-5 center"><span></span></div>}
+        {hoverProduct && <div className="loader-6 center"><span></span></div>}
       </>}
 
       <div className={`overlay ${loaded ? 'hidden' : ''}`}>
@@ -96,6 +98,8 @@ export default function App() {
         <Graphics 
           hoverProduct={hoverProduct}
           setHoverProduct={setHoverProduct}
+          selectProduct={selectProduct}
+          setSelectProduct={setSelectProduct}
           setProgress={setProgress} 
           loaded={loaded} 
           setLoaded={setLoaded} 

@@ -27,7 +27,7 @@ function ControlsOrbit() {
   )
 }
 extend({ PointerLockControls })
-function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHoverProduct }) {
+function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHoverProduct, setSelectProduct }) {
   const controls = useRef()
   const { scene, camera, gl } = useThree()
 
@@ -117,6 +117,13 @@ function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHov
   }, [activate])
 
   const onMouseDown = () => {
+    if (hoverProduct) {
+      setSelectProduct(hoverProduct)
+      controls.current.unlock()
+      return
+    }
+
+    setSelectProduct(null)
     setMoveForward(true)
   }
 
@@ -149,7 +156,7 @@ function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHov
       document.removeEventListener('pointerup', onMouseUp)
       document.removeEventListener('pointerout', onMouseUp)
     }
-  }, [])
+  }, [hoverProduct])
 
   return (
     <pointerLockControls ref={controls} args={[camera, gl.domElement]} />
@@ -292,7 +299,19 @@ function Lights() {
   )
 }
 
-const Graphics = ({ hoverProduct, setHoverProduct, mobile, activate, setActivate, setStuck, loaded, setLoaded, setProgress, ...props }) => {
+const Graphics = ({ 
+  hoverProduct, 
+  setHoverProduct, 
+  selectProduct, 
+  setSelectProduct, 
+  mobile, 
+  activate, 
+  setActivate, 
+  setStuck, 
+  loaded, 
+  setLoaded, 
+  setProgress, 
+  ...props }) => {
 
   return (
     <Canvas
@@ -322,7 +341,7 @@ const Graphics = ({ hoverProduct, setHoverProduct, mobile, activate, setActivate
       <Lights />
       <ambientLight intensity={0.8} />
       {!mobile && <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck}
-        hoverProduct={hoverProduct} setHoverProduct={setHoverProduct} />}
+        hoverProduct={hoverProduct} setHoverProduct={setHoverProduct} setSelectProduct={setSelectProduct} />}
       {mobile && <ControlsOrbit />}
 
     </Canvas>
