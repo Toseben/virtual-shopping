@@ -38,12 +38,8 @@ function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHov
   const raycaster = useMemo(() => new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 14), [])
   const productRaycaster = useMemo(() => new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 30), [])
 
-  const objects = scene.children.filter(obj => obj.name === 'OSG_Scene')
   const boundaries = scene.children.filter(obj => obj.name === 'boundaries')
   const products = scene.getObjectByName('products')
-
-  const storePos = useRef()
-  const storeRot = useRef()
 
   const setCurrent = current => {
     if (hoverProduct === current) return
@@ -79,7 +75,7 @@ function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHov
       lookAt.multiply(new THREE.Vector3(1, 0, 1)).normalize()
       raycaster.ray.direction.copy(lookAt)
 
-      const intersections = objects.length ? raycaster.intersectObjects([...objects, ...boundaries], true) : []
+      const intersections = boundaries.length ? raycaster.intersectObjects([...boundaries]) : []
 
       const time = performance.now();
       const delta = (time - prevTime.current) / 1000;
@@ -100,11 +96,7 @@ function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHov
       controls.current.moveForward(- velocity.current * delta);
 
       prevTime.current = time;
-
-      storePos.current = camera.position.clone()
-      storeRot.current = camera.rotation.clone()
     }
-
   })
 
   useEffect(() => {
@@ -136,8 +128,6 @@ function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHov
   const onUnlock = () => {
     setActivate(false)
     velocity.current = 0
-    if (storePos.current) camera.position.copy(storePos.current)
-    if (storeRot.current) camera.rotation.copy(storeRot.current)
     gl.render(scene, camera)
   }
 
@@ -225,7 +215,7 @@ function Model({ setLoaded, setProgress }) {
 }
 
 function Boundaries() {
-  const gltf = useLoader(GLTFLoader, 'assets/boundaries.glb')
+  const gltf = useLoader(GLTFLoader, 'assets/boundaries_v002.glb')
 
   return (
     <mesh
