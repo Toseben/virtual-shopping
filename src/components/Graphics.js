@@ -229,8 +229,6 @@ function Boundaries() {
   )
 }
 
-const colors = ['#1abc9c', '#f1c40f']
-
 function Products({ hoverProduct }) {
   const gltf = useLoader(GLTFLoader, 'assets/products.glb')
 
@@ -240,15 +238,23 @@ function Products({ hoverProduct }) {
     return [products, meshes]
   }, [])
 
+  const group = useRef()
+  useEffect(() => {
+    group.current.children.forEach(child => {
+      child.renderOrder = 999;
+    })
+  }, [])
+
   return (
-    <group name="products">
+    <group name="products" ref={group}>
       {meshes.map((mesh, index) => {
-        const { color } = useSpring({ color: hoverProduct === products[index] ? colors[1] : colors[0], config: { mass: 1, friction: 12, tension: 180 } })
+        const boolean = hoverProduct === products[index]
+        const { opacity } = useSpring({ opacity: boolean ? 0.175 : 0, config: { mass: 1, friction: 20, tension: 210 } })
         return (
           <mesh key={index}
             name={products[index]}>
             <bufferGeometry attach="geometry" {...mesh.geometry} />
-            <a.meshBasicMaterial attach="material" color={color} />
+            <a.meshBasicMaterial side={THREE.DoubleSide} attach="material" color={0xf1c40f} opacity={opacity} transparent depthTest={false} />
           </mesh>
         )
       })}
@@ -286,9 +292,8 @@ function Lights() {
   )
 }
 
-const Graphics = ({ mobile, activate, setActivate, setStuck, loaded, setLoaded, setProgress, ...props }) => {
-  const [hoverProduct, setHoverProduct] = useState(null)
-  
+const Graphics = ({ hoverProduct, setHoverProduct, mobile, activate, setActivate, setStuck, loaded, setLoaded, setProgress, ...props }) => {
+
   return (
     <Canvas
       gl={{ antialias: true }}
@@ -316,7 +321,7 @@ const Graphics = ({ mobile, activate, setActivate, setStuck, loaded, setLoaded, 
 
       <Lights />
       <ambientLight intensity={0.8} />
-      {!mobile && <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck} 
+      {!mobile && <ControlsPointer activate={activate} setActivate={setActivate} setStuck={setStuck}
         hoverProduct={hoverProduct} setHoverProduct={setHoverProduct} />}
       {mobile && <ControlsOrbit />}
 

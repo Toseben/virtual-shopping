@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react'
 import { useTrail, animated } from 'react-spring'
 import Div100vh from 'react-div-100vh'
 import './styles/styles.scss';
+import './styles/trigger.scss'
+
 import Graphics from './components/Graphics';
 import MessageHub from './components/MessageHub';
 import ProgressBar from "./components/ProgressBar";
@@ -18,6 +20,7 @@ export default function App() {
   const [loaded, setLoaded] = useState(false)
   const [progress, setProgress] = useState(0)
   const [mobile] = useState(isMobile);
+  const [hoverProduct, setHoverProduct] = useState(null)
 
   const mousePressed = () => {
     setActivate(true)
@@ -43,9 +46,9 @@ export default function App() {
     <>
       {activate && <>
         <MessageHub />
-        <div className="pointer"></div>
+        {!hoverProduct && <div class="loader-5 center"><span></span></div>}
+        {hoverProduct && <div class="loader-6 center"><span></span></div>}
       </>}
-
 
       <div className={`overlay ${loaded ? 'hidden' : ''}`}>
         <ProgressBar progress={progress} />
@@ -90,7 +93,17 @@ export default function App() {
       </div>
 
       <Div100vh style={{ height: `100rvh` }} className="vis-container">
-        <Graphics setProgress={setProgress} loaded={loaded} setLoaded={setLoaded} setStuck={setStuck} mobile={mobile} activate={activate} setActivate={setActivate}></Graphics>
+        <Graphics 
+          hoverProduct={hoverProduct}
+          setHoverProduct={setHoverProduct}
+          setProgress={setProgress} 
+          loaded={loaded} 
+          setLoaded={setLoaded} 
+          setStuck={setStuck} 
+          mobile={mobile} 
+          activate={activate} 
+          setActivate={setActivate}>  
+        </Graphics>
       </Div100vh>
     </>
   );
