@@ -2,13 +2,14 @@ import * as THREE from 'three'
 import React, { useRef, Suspense, useEffect, useState, useMemo } from 'react'
 import { Canvas, extend, useFrame, useThree, useLoader } from 'react-three-fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { PointerLockControls } from '../libs/PointerLockControls'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+
+import Environment from './Environment'
+import Products from './Products'
+import Lights from './Lights'
 import Effects from './Effects'
 import Stacy from './Stacy'
-
-import { useSpring, a } from 'react-spring/three'
 
 extend({ OrbitControls })
 function ControlsOrbit() {
@@ -153,67 +154,6 @@ function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHov
   )
 }
 
-function Model({ setLoaded, setProgress }) {
-  const { scene } = useThree()
-
-  const actions = useRef()
-  const [mixer] = useState(() => new THREE.AnimationMixer())
-  useFrame((state, delta) => mixer.update(delta))
-
-  const gltf = useLoader(GLTFLoader, 'assets/LittlestTokyo.glb', loader => {
-    loader.manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-      setProgress(parseInt(Math.min(itemsLoaded / 14, 1) * 100));
-    };
-
-    const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('assets/draco/gltf/');
-    loader.setDRACOLoader(dracoLoader)
-  })
-
-  const r = "/assets/envMap/";
-  const urls = [r + "px.png", r + "nx.png",
-  r + "py.png", r + "ny.png",
-  r + "pz.png", r + "nz.png"];
-  const [envMap] = useLoader(THREE.CubeTextureLoader, [urls])
-
-  useEffect(() => {
-    // scene.fog = new THREE.FogExp2(0xeeeeee, 0.01);
-
-    gltf.scene.scale.set(0.5, 0.5, 0.5)
-
-    const box = new THREE.Box3();
-    box.setFromObject(gltf.scene)
-
-    const center = new THREE.Vector3()
-    box.getCenter(center)
-    gltf.scene.position.x -= center.x
-    gltf.scene.position.z -= center.z
-    gltf.scene.position.y -= box.min.y
-    gltf.scene.position.y -= 6.25
-
-    Object.values(gltf.nodes).filter(node => node.type === 'Mesh').forEach(node => {
-      node.receiveShadow = node.castShadow = true
-      node.material.envMap = envMap
-      node.material.envMapIntensity = 2
-      node.material.needsUpdate = true
-    })
-
-    setProgress(100);
-    setLoaded(true)
-    document.body.style.background = '#2f2f2f'
-    scene.add(gltf.scene)
-
-    actions.current = { animation: mixer.clipAction(gltf.animations[0], gltf.scene) }
-    return () => gltf.animations.forEach(clip => mixer.uncacheClip(clip))
-  }, [])
-
-  useEffect(() => void actions.current.animation.play(), [])
-
-  return (
-    <></>
-  )
-}
-
 function Boundaries() {
   const gltf = useLoader(GLTFLoader, 'assets/boundaries_v002.glb')
 
@@ -223,69 +163,6 @@ function Boundaries() {
       <bufferGeometry attach="geometry" {...gltf.__$[2].geometry} />
       <meshBasicMaterial attach="material" color="hotpink" visible={false} />
     </mesh>
-  )
-}
-
-function Products({ hoverProduct }) {
-  const gltf = useLoader(GLTFLoader, 'assets/products.glb')
-
-  const [products, meshes] = useMemo(() => {
-    const products = gltf.__$.filter(obj => obj.name.includes('product')).map(obj => obj.name)
-    const meshes = gltf.__$.filter(obj => obj.name.includes('mesh'))
-    return [products, meshes]
-  }, [])
-
-  const group = useRef()
-  useEffect(() => {
-    group.current.children.forEach(child => {
-      child.renderOrder = 999;
-    })
-  }, [])
-
-  return (
-    <group name="products" ref={group}>
-      {meshes.map((mesh, index) => {
-        const boolean = hoverProduct === products[index]
-        const { opacity } = useSpring({ opacity: boolean ? 0.175 : 0, config: { mass: 1, friction: 20, tension: 210 } })
-        return (
-          <mesh key={index}
-            name={products[index]}>
-            <bufferGeometry attach="geometry" {...mesh.geometry} />
-            <a.meshBasicMaterial side={THREE.DoubleSide} attach="material" color={0xf1c40f} opacity={opacity} transparent depthTest={false} />
-          </mesh>
-        )
-      })}
-    </group>
-  )
-}
-
-function Lights() {
-  const { scene } = useThree()
-
-  useEffect(() => {
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(256, 256, 256);
-    light.castShadow = true;
-    scene.add(light);
-
-    light.shadow.mapSize.width = 1024;
-    light.shadow.mapSize.height = 1024;
-    light.shadow.camera.near = 0.5;
-    light.shadow.camera.far = 1024;
-    light.shadow.bias = -0.002;
-
-    const d = 200;
-    light.shadow.camera.left = - d;
-    light.shadow.camera.right = d;
-    light.shadow.camera.top = d;
-    light.shadow.camera.bottom = - d;
-
-    // const helper = new THREE.CameraHelper(light.shadow.camera);
-    // scene.add(helper);
-  }, [])
-
-  return (
-    <></>
   )
 }
 
@@ -316,7 +193,7 @@ const Graphics = ({
       camera={{ far: 1000, near: 0.1, fov: 100 }}>
 
       <Suspense fallback={null}>
-        <Model setLoaded={setLoaded} setProgress={setProgress} />
+        <Environment setLoaded={setLoaded} setProgress={setProgress} />
         <Effects />
       </Suspense>
 

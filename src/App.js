@@ -79,7 +79,7 @@ export default function App() {
       </div>
 
       <div id="blocker" className={`${activate ? 'hidden' : ''}`} onClick={mousePressed}>
-        <div className={`trails-main ${activate ? 'stuck' : ''}`}>
+        {!selectProduct && <div className={`trails-main ${activate ? 'stuck' : ''}`}>
           <div>
             {instructionsTrail.map(({ x, height, ...rest }, index) => {
               return <animated.div
@@ -90,8 +90,7 @@ export default function App() {
               </animated.div>
             })}
           </div>
-        </div>
-
+        </div>}
       </div>
 
       <Div100vh style={{ height: `100rvh` }} className="vis-container">
