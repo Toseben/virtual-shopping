@@ -80,6 +80,7 @@ export default function Products({ hoverProduct, selectProduct }) {
       if (!child.name.includes('real')) return
       child.position.copy(camera.position).add(lookAt)
       child.children[0].rotation.y += 0.025
+      child.position.y += 0.1
       child.lookAt(camera.position)
     })
 
@@ -100,13 +101,13 @@ export default function Products({ hoverProduct, selectProduct }) {
   return (
     <group name="products" ref={group}>
       {meshes.map((mesh, index) => {
-        const hoverBoolean = hoverProduct === products[index]
+        const hoverBoolean = hoverProduct === products[index] && !selectProduct
         const selectBoolean = selectProduct === products[index]
 
         const spring = useSpring({
           opacity: hoverBoolean ? 0.175 : 0,
           pOpacity: selectBoolean ? 1 : 0,
-          scale: selectBoolean ? 4 : 0,
+          scale: selectBoolean ? 3.5 : 0,
           config: { mass: 1, friction: 20, tension: 210 }
         })
 

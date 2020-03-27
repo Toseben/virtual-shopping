@@ -104,6 +104,17 @@ export default function App() {
         </div>
       </>}
 
+      <div className={`styleSelector ${selectProduct ? 'select' : ''}`}>
+        <div className={`swatchContainer`}>
+          <div className="basic"></div>
+          <div className="gold"></div>
+        </div>
+        <div className="titleContainer">
+          <p className="basicTitle">Basic</p>
+          <p className="goldTitle">Gold</p>
+        </div>
+      </div>
+
       <div className={`trails-main ${stuck ? 'stuck' : ''}`}>
         <div>
           {trail.map(({ x, height, ...rest }, index) => {
