@@ -25,6 +25,7 @@ export default function App() {
   const [selectProduct, setSelectProduct] = useState(null)
 
   const mousePressed = () => {
+    setSelectProduct(null)
     setActivate(true)
   }
 
@@ -78,7 +79,7 @@ export default function App() {
         </div>
       </div>
 
-      <div id="blocker" className={`${activate ? 'hidden' : ''}`} onClick={mousePressed}>
+      <div id="blocker" className={`${activate ? 'hidden' : ''} ${selectProduct ? 'productPage' : ''}`} onClick={mousePressed}>
         {!selectProduct && <div className={`trails-main ${activate ? 'stuck' : ''}`}>
           <div>
             {instructionsTrail.map(({ x, height, ...rest }, index) => {

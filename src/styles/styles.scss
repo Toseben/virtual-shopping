@@ -38,6 +38,10 @@ body {
     visibility: hidden;
     opacity: 0;
   }
+
+  &.productPage {
+    opacity: 0;
+  }
 }
 
 #instructions {

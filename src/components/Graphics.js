@@ -199,7 +199,7 @@ const Graphics = ({
 
       {loaded &&
         <Suspense fallback={null}>
-          <Products hoverProduct={hoverProduct} />
+          <Products hoverProduct={hoverProduct} selectProduct={selectProduct} />
           <Boundaries />
           <Stacy />
         </Suspense>
