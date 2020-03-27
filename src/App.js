@@ -23,11 +23,10 @@ const products = {
   'product6_Bicycle': { price: 100 },
   'product7_Bonsai_Tree': { price: 50 },
   'product8_Statue': { price: 25 },
-  'product9_Brush': { price: 10 },
+  'product9_Broom': { price: 10 },
   'product10_Newspapers': { price: 3 },
   'product11_Traffic_Cone': { price: 5 },
-  'product12_Bucket': { price: 10 },
-  'product13_Sphere': { price: 10 },
+  'product12_Bucket': { price: 10 }
 }
 
 export default function App() {
