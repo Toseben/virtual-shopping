@@ -77,7 +77,6 @@ body {
 }
 
 // TEXT
-
 .trails-main {
   position: relative;
   width: 100%;
@@ -92,6 +91,9 @@ body {
   background: rgba(0, 0, 0, 0);
   transition: background 0.5s;
   pointer-events: none;
+  &.product {
+    height: 25%;
+  }
   &.stuck {
     background: rgba(0, 0, 0, 0.25);
   }
@@ -108,6 +110,11 @@ body {
   text-transform: uppercase;
   will-change: transform, opacity;
   overflow: hidden;
+  &.product {
+    text-transform: none;
+    font-size: 4em;
+    text-shadow: 0 6px 12px rgba(0, 0, 0, 0.23);
+  }
   &.instructions {
     font-size: 3em;
     text-align: center;

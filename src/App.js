@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { useTrail, animated } from 'react-spring'
+import React, { useState } from 'react'
+import { useTrail, animated, useSpring } from 'react-spring'
 import Div100vh from 'react-div-100vh'
 import './styles/styles.scss';
 import './styles/trigger.scss'
@@ -13,6 +13,21 @@ const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini
 const items = ['Turn', 'Back', 'svg', 'Dead', 'End']
 const instructions = ['Click to play', '', 'Controls', 'Look: Mouse', 'Move: Mouse Press']
 const config = { mass: 5, tension: 2000, friction: 200 }
+
+const products = {
+  'product1_Sushi_Platter': { price: 100 },
+  'product2_Sushi_Platter': { price: 100 },
+  'product3_Sushi_Platter': { price: 100 },
+  'product4_Toys': { price: 100 },
+  'product5_Crate_of_Soft_Drinks': { price: 100 },
+  'product6_Bicycle': { price: 100 },
+  'product7_Bonsai_Tree': { price: 100 },
+  'product8_Statue': { price: 100 },
+  'product9_Brush': { price: 100 },
+  'product10_Newspapers': { price: 100 },
+  'product11_Traffic_Cone': { price: 100 },
+  'product12_Bucket': { price: 100 },
+}
 
 export default function App() {
   const [stuck, setStuck] = useState(false)
@@ -45,6 +60,16 @@ export default function App() {
     from: { opacity: 0, x: 20, height: 0 },
   })
 
+  const productTitle = useSpring({
+    config,
+    opacity: selectProduct ? 1 : 0,
+    x: selectProduct ? 0 : 20,
+    height: selectProduct ? 80 : 0,
+    from: { opacity: 0, x: 20, height: 0 },
+  })
+
+  const productName = selectProduct ? selectProduct.split('_').filter(word => !word.includes('product')).join(' ') : null
+
   return (
     <>
       {activate && <>
@@ -56,6 +81,16 @@ export default function App() {
       <div className={`overlay ${loaded ? 'hidden' : ''}`}>
         <ProgressBar progress={progress} />
       </div>
+
+      {selectProduct && <div className="trails-main product">
+        <div>
+          <animated.div
+            className="trails-text product"
+            style={{ transform: productTitle.x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
+            <animated.div style={{ height: productTitle.height }}>{productName}</animated.div>
+          </animated.div>
+        </div>
+      </div>}
 
       <div className={`trails-main ${stuck ? 'stuck' : ''}`}>
         <div>
@@ -95,18 +130,18 @@ export default function App() {
       </div>
 
       <Div100vh style={{ height: `100rvh` }} className="vis-container">
-        <Graphics 
+        <Graphics
           hoverProduct={hoverProduct}
           setHoverProduct={setHoverProduct}
           selectProduct={selectProduct}
           setSelectProduct={setSelectProduct}
-          setProgress={setProgress} 
-          loaded={loaded} 
-          setLoaded={setLoaded} 
-          setStuck={setStuck} 
-          mobile={mobile} 
-          activate={activate} 
-          setActivate={setActivate}>  
+          setProgress={setProgress}
+          loaded={loaded}
+          setLoaded={setLoaded}
+          setStuck={setStuck}
+          mobile={mobile}
+          activate={activate}
+          setActivate={setActivate}>
         </Graphics>
       </Div100vh>
     </>

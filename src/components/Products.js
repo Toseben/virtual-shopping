@@ -4,7 +4,7 @@ import { useLoader, useThree, useFrame } from 'react-three-fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { useSpring, a } from 'react-spring/three'
 
-function Product({ index, center, mesh, products, spring }) {
+function Product({ index, center, mesh, products, spring, scaleMult }) {
   return (
     <>
       <mesh
@@ -14,7 +14,7 @@ function Product({ index, center, mesh, products, spring }) {
       </mesh>
       <a.group
         name={`${products[index]}_real`}
-        scale={spring.scale.interpolate(s => [s, s, s])}>
+        scale={spring.scale.interpolate(s => [s / scaleMult, s / scaleMult, s / scaleMult])}>
         <group>
           <mesh
             renderOrder={999}
@@ -49,7 +49,7 @@ export default function Products({ hoverProduct, selectProduct }) {
   const group = useRef()
   const pointLight = useRef()
 
-  useFrame(({ clock }) => {
+  useFrame(() => {
     const lookAt = new THREE.Vector3(0, 0, -1);
     lookAt.applyQuaternion(camera.quaternion).normalize().multiplyScalar(2)
     group.current.children.forEach(child => {
@@ -69,7 +69,7 @@ export default function Products({ hoverProduct, selectProduct }) {
       if (!child.name.includes('real')) return
       child.children[0].rotation.order = 'YXZ'
       child.children[0].rotation.y = 0
-      child.children[0].rotation.x = Math.PI / 12
+      child.children[0].rotation.x = Math.PI / 16
     })
   }, [selectProduct])
 
@@ -82,15 +82,18 @@ export default function Products({ hoverProduct, selectProduct }) {
         const spring = useSpring({
           opacity: hoverBoolean ? 0.175 : 0,
           pOpacity: selectBoolean ? 1 : 0,
-          scale: selectBoolean ? 0.2 : 0,
+          scale: selectBoolean ? 4 : 0,
           config: { mass: 1, friction: 20, tension: 210 }
         })
 
         const box = new THREE.Box3();
         box.setFromBufferAttribute(mesh.geometry.attributes.position)
         const center = new THREE.Vector3()
+        const size = new THREE.Vector3()
         box.getCenter(center)
+        box.getSize(size)
         center.multiplyScalar(-1)
+        const scaleMult = size.x + size.y + size.z
 
         return (
           <Product
@@ -100,6 +103,7 @@ export default function Products({ hoverProduct, selectProduct }) {
             mesh={mesh}
             products={products}
             spring={spring}
+            scaleMult={scaleMult}
           />
         )
       })}
