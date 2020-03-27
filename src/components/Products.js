@@ -5,6 +5,19 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { useSpring, a } from 'react-spring/three'
 
 function Product({ index, center, mesh, products, spring, scaleMult }) {
+  const matSettings = {
+    gold: {
+      roughness: 0.4,
+      metalness: 1,
+      color: new THREE.Color(1.000, 0.766, 0.336)
+    },
+    basic: {
+      roughness: 0.7,
+      metalness: 0,
+      color: new THREE.Color(`hsl(168, 76%, 5%)`)
+    }
+  }
+
   return (
     <>
       <mesh
@@ -21,15 +34,26 @@ function Product({ index, center, mesh, products, spring, scaleMult }) {
             position={center}>
             <bufferGeometry attach="geometry" {...mesh.geometry} />
             <a.meshStandardMaterial
-              roughness={0.3}
-              metalness={1}
-              side={THREE.DoubleSide}
               attach="material"
-              color={new THREE.Color(1.000, 0.766, 0.336)}
-              opacity={spring.pOpacity}
               transparent
+              side={THREE.DoubleSide}
+              opacity={spring.pOpacity}
+              {...matSettings.gold}
             />
           </mesh>
+          <group scale={[1.025, 1.025, 1.025]}>
+            <mesh
+              renderOrder={998}
+              position={center}>
+              <bufferGeometry attach="geometry" {...mesh.geometry} />
+              <a.meshBasicMaterial
+                attach="material"
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                color="black"
+              />
+            </mesh>
+          </group>
         </group>
       </a.group>
     </>

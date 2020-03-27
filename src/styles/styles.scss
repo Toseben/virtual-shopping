@@ -92,7 +92,12 @@ body {
   transition: background 0.5s;
   pointer-events: none;
   &.product {
-    height: 25%;
+    height: auto;
+    top: 4vh;
+  }
+  &.price {
+    height: auto;
+    top: 12vh;
   }
   &.stuck {
     background: rgba(0, 0, 0, 0.25);
@@ -112,8 +117,8 @@ body {
   overflow: hidden;
   &.product {
     text-transform: none;
-    font-size: 4em;
-    text-shadow: 0 6px 12px rgba(0, 0, 0, 0.23);
+    font-size: 3em;
+    text-shadow: 0 6px 12px rgba(0, 0, 0, 0.75);
   }
   &.instructions {
     font-size: 3em;

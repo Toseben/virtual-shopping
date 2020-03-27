@@ -15,18 +15,19 @@ const instructions = ['Click to play', '', 'Controls', 'Look: Mouse', 'Move: Mou
 const config = { mass: 5, tension: 2000, friction: 200 }
 
 const products = {
-  'product1_Sushi_Platter': { price: 100 },
-  'product2_Sushi_Platter': { price: 100 },
-  'product3_Sushi_Platter': { price: 100 },
-  'product4_Toys': { price: 100 },
-  'product5_Crate_of_Soft_Drinks': { price: 100 },
+  'product1_Sushi_Platter': { price: 5 },
+  'product2_Sushi_Platter': { price: 5 },
+  'product3_Sushi_Platter': { price: 5 },
+  'product4_Toys': { price: 3 },
+  'product5_Crate_of_Soft_Drinks': { price: 10 },
   'product6_Bicycle': { price: 100 },
-  'product7_Bonsai_Tree': { price: 100 },
-  'product8_Statue': { price: 100 },
-  'product9_Brush': { price: 100 },
-  'product10_Newspapers': { price: 100 },
-  'product11_Traffic_Cone': { price: 100 },
-  'product12_Bucket': { price: 100 },
+  'product7_Bonsai_Tree': { price: 50 },
+  'product8_Statue': { price: 25 },
+  'product9_Brush': { price: 10 },
+  'product10_Newspapers': { price: 3 },
+  'product11_Traffic_Cone': { price: 5 },
+  'product12_Bucket': { price: 10 },
+  'product13_Sphere': { price: 10 },
 }
 
 export default function App() {
@@ -82,15 +83,26 @@ export default function App() {
         <ProgressBar progress={progress} />
       </div>
 
-      {selectProduct && <div className="trails-main product">
-        <div>
-          <animated.div
-            className="trails-text product"
-            style={{ transform: productTitle.x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
-            <animated.div style={{ height: productTitle.height }}>{productName}</animated.div>
-          </animated.div>
+      {selectProduct && <>
+        <div className="trails-main product">
+          <div>
+            <animated.div
+              className="trails-text product"
+              style={{ transform: productTitle.x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
+              <animated.div style={{ height: productTitle.height }}>{productName}</animated.div>
+            </animated.div>
+          </div>
         </div>
-      </div>}
+        <div className="trails-main price">
+          <div>
+            <animated.div
+              className="trails-text product"
+              style={{ transform: productTitle.x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
+              <animated.div style={{ height: productTitle.height }}>{`${products[selectProduct].price} Coins`}</animated.div>
+            </animated.div>
+          </div>
+        </div>
+      </>}
 
       <div className={`trails-main ${stuck ? 'stuck' : ''}`}>
         <div>
