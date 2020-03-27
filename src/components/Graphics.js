@@ -116,7 +116,6 @@ function ControlsPointer({ activate, setActivate, setStuck, hoverProduct, setHov
       return
     }
 
-    setSelectProduct(null)
     setMoveForward(true)
   }
 
@@ -178,6 +177,7 @@ const Graphics = ({
   loaded, 
   setLoaded, 
   setProgress, 
+  materialStyle,
   ...props }) => {
 
   return (
@@ -199,7 +199,7 @@ const Graphics = ({
 
       {loaded &&
         <Suspense fallback={null}>
-          <Products hoverProduct={hoverProduct} selectProduct={selectProduct} />
+          <Products hoverProduct={hoverProduct} selectProduct={selectProduct} materialStyle={materialStyle} />
           <Boundaries />
           <Stacy />
         </Suspense>

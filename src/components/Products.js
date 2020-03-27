@@ -4,7 +4,7 @@ import { useLoader, useThree, useFrame } from 'react-three-fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { useSpring, a } from 'react-spring/three'
 
-function Product({ index, center, mesh, products, spring, scaleMult }) {
+function Product({ index, center, mesh, products, spring, scaleMult, materialStyle }) {
   const matSettings = {
     gold: {
       roughness: 0.4,
@@ -38,7 +38,7 @@ function Product({ index, center, mesh, products, spring, scaleMult }) {
               transparent
               side={THREE.DoubleSide}
               opacity={spring.pOpacity}
-              {...matSettings.gold}
+              {...matSettings[materialStyle]}
             />
           </mesh>
           <group scale={[1.025, 1.025, 1.025]}>
@@ -60,7 +60,7 @@ function Product({ index, center, mesh, products, spring, scaleMult }) {
   )
 }
 
-export default function Products({ hoverProduct, selectProduct }) {
+export default function Products({ hoverProduct, selectProduct, materialStyle }) {
   const { camera } = useThree()
   const gltf = useLoader(GLTFLoader, 'assets/products.glb')
 
@@ -129,6 +129,7 @@ export default function Products({ hoverProduct, selectProduct }) {
             products={products}
             spring={spring}
             scaleMult={scaleMult}
+            materialStyle={materialStyle}
           />
         )
       })}

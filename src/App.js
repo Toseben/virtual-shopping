@@ -35,6 +35,7 @@ export default function App() {
   const [activate, setActivate] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [materialStyle, setMaterialStyle] = useState('basic')
   const [mobile] = useState(isMobile);
 
   const [hoverProduct, setHoverProduct] = useState(null)
@@ -43,6 +44,10 @@ export default function App() {
   const mousePressed = () => {
     setSelectProduct(null)
     setActivate(true)
+  }
+
+  const onSwatchClick = style => {
+    setMaterialStyle(style)
   }
 
   const trail = useTrail(items.length, {
@@ -70,6 +75,7 @@ export default function App() {
   })
 
   const productName = selectProduct ? selectProduct.split('_').filter(word => !word.includes('product')).join(' ') : null
+  const isFancy = materialStyle === 'gold' ? ' - Rich Edition' : ''
 
   return (
     <>
@@ -98,7 +104,9 @@ export default function App() {
             <animated.div
               className="trails-text product"
               style={{ transform: productTitle.x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
-              <animated.div style={{ height: productTitle.height }}>{`${products[selectProduct].price} Coins`}</animated.div>
+              <animated.div style={{ height: productTitle.height }}>
+                {`${products[selectProduct].price * (materialStyle === 'gold' ? 2 : 1)} Coins${isFancy}`}
+              </animated.div>
             </animated.div>
           </div>
         </div>
@@ -106,8 +114,8 @@ export default function App() {
 
       <div className={`styleSelector ${selectProduct ? 'select' : ''}`}>
         <div className={`swatchContainer`}>
-          <div className="basic"></div>
-          <div className="gold"></div>
+          <div className="basic" onClick={() => onSwatchClick('basic')}></div>
+          <div className="gold" onClick={() => onSwatchClick('gold')}></div>
         </div>
         <div className="titleContainer">
           <p className="basicTitle">Basic</p>
@@ -164,7 +172,8 @@ export default function App() {
           setStuck={setStuck}
           mobile={mobile}
           activate={activate}
-          setActivate={setActivate}>
+          setActivate={setActivate}
+          materialStyle={materialStyle}>
         </Graphics>
       </Div100vh>
     </>
