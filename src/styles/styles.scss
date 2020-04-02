@@ -2,6 +2,13 @@
 
 * {
   font-family: "Open Sans", sans-serif;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
   &:focus {
     outline: none;
   }
@@ -211,20 +218,6 @@ body {
   transition: width 0.6s ease;
 }
 
-@media (max-width: 768px), (max-height: 768px) {
-  .trails-text {
-    font-size: 2.5em;
-    height: 60px;
-    line-height: 60px;
-    &.instructions {
-      font-size: 1.75em;
-      &:first-child {
-        font-size: 2.5em;
-      }
-    }
-  }
-}
-
 .titleContainer {
   width: 40vmin;
   position: absolute;
@@ -276,6 +269,53 @@ body {
   }
   .basic {
     background-image: url("./assets/basic.png");
+  }
+}
+
+@media (max-width: 768px), (max-height: 768px) {
+  .trails-text {
+    font-size: 2.5em;
+    height: 60px;
+    line-height: 60px;
+    &.product {
+      font-size: 1.5em;
+    margin: 0 10px;
+      text-align: center;
+    }
+    &.instructions {
+      font-size: 1.75em;
+      &:first-child {
+        font-size: 2.5em;
+      }
+    }
+  }
+
+  .trails-main {
+    &.product {
+      top: 10px;
+    }
+    &.price {
+      top: 60px;
+    }
+  }
+
+  .titleContainer {
+    width: 50vmin;
+    margin-bottom: 40px;
+    .goldTitle,
+    .basicTitle {
+      font-size: 1.25em;
+      font-weight: 800;
+    }
+  }
+
+  .swatchContainer {
+    height: 25vmin;
+    width: 50vmin;
+    .gold,
+    .basic {
+      margin: 10px;
+    }
   }
 }
 

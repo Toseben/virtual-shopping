@@ -12,6 +12,7 @@ const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini
 
 const items = ['Turn', 'Back', 'svg', 'Dead', 'End']
 const instructions = ['Click to play', '', 'Controls', 'Look: Mouse', 'Move: Mouse Press']
+const mobileInstructions = ['Touch to play', '', 'Controls', 'Look: Device Gyro', 'Move: Touch Screen']
 const config = { mass: 5, tension: 2000, friction: 200 }
 
 const products = {
@@ -152,7 +153,7 @@ export default function App() {
                 key={items[index]}
                 className="trails-text instructions"
                 style={{ ...rest, transform: x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
-                <animated.div style={{ height }}>{instructions[index]}</animated.div>
+                <animated.div style={{ height }}>{mobile ? mobileInstructions[index] : instructions[index]}</animated.div>
               </animated.div>
             })}
           </div>
